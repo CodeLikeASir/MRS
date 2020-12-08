@@ -7,3 +7,6 @@ python MRS.py --help for more information.
 Filter modes:
 0: Filter by flair
 1: Filter by keyword in title
+
+If you have problems with missing dependencies/modules, execute this command:
+pip install -r requirements.txt
