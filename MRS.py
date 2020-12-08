@@ -63,12 +63,12 @@ if keyword == "_":
     for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
         if(checkDate(start, end, post.created_utc)):
             posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
-elif mode == 0:
+elif int(mode) == 0:
     for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
         if(post.link_flair_text == keyword):
             if(checkDate(start, end, post.created_utc)):
                 posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
-elif mode == 1:
+elif int(mode) == 1:
     for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
         if(keyword in post.title):
             if(checkDate(start, end, post.created_utc)):
