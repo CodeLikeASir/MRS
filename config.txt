@@ -1,4 +1,4 @@
 [api-key]
-client_id = 97BU0LvRgn4Auw
-client_secret = 7E7dIRJbzqIZZyKhnstA4UrrU8YZgg
-user_agent = CLAS Scrapper
+client_id = CLIENT_ID_HERE
+client_secret = CLIENT_SECRET_HERE
+user_agent = USER_AGENT_HERE
