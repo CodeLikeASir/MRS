@@ -58,22 +58,27 @@ print("Starting to look for " + keyword + " in " + subreddit)
 if(start > 0 and end > 0):
     print("From " + intToDate(start) + " to " + intToDate(end))
 
+postsAnalyzed = 0
+analyzedPosts = 10000
 posts = []
+
+# rework with: 
+
 if keyword == "_":
     for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
         if(checkDate(start, end, post.created_utc)):
             posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
 elif int(mode) == 0:
+    print("entered mode 0")
     for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
         if(post.link_flair_text == keyword):
             if(checkDate(start, end, post.created_utc)):
                 posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
 elif int(mode) == 1:
-    for post in reddit.subreddit(subreddit).top(limit=analyzedPosts):
-        if(keyword in post.title):
-            if(checkDate(start, end, post.created_utc)):
-                posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
+    for post in reddit.subreddit(subreddit).search(keyword, sort='relevance'):
+        posts.append([post.title, post.score, post.subreddit, post.num_comments, intToDate(post.created_utc)])
 
+print("Analyzed " + str(postsAnalyzed))
 print("Found " + str(len(posts)) + " results.")   
 posts = pd.DataFrame(posts,columns=['title', 'score', 'subreddit', 'num_comments', 'created'])
 
