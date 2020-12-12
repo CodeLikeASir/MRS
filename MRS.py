@@ -36,7 +36,7 @@ def collectSubData(subm):
 
 def updateSubs_file():
     upload_count = 0
-    print("input filename of submission file")
+    print("Enter filename for the submission file:")
     filename = input()
     file = filename + ".csv"
     with open(file, 'w', newline='', encoding='utf-8') as file: 
@@ -47,15 +47,15 @@ def updateSubs_file():
             a.writerow(subStats[sub][0])
             upload_count+=1
             
-        print(str(upload_count) + " submissions have been uploaded")
+        print(str(upload_count) + " submissions have been saved to file.")
 
 def dateToInt(date):
     return int(time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple()))
 
 parser=argparse.ArgumentParser()
 
-parser.add_argument('--subr', help='name of subreddit to search in', default='all')
 parser.add_argument('--keyword', help='keyword to search for', default='_')
+parser.add_argument('--subr', help='name of subreddit to search in', default='all')
 parser.add_argument('--after', help='first date to find results for, format YYYY-MM-DD, example: 2020-01-01', default=0)
 parser.add_argument('--before', help='last date to find results for', default=0)
 
@@ -63,9 +63,10 @@ args=parser.parse_args()
     
 #Subreddit to query
 sub = args.subr
-#before and after dates
-after = "1514764800"  #January 1st 
-before = "1538352000" #October 1st
+
+#before and after placeholder
+after = ""
+before = ""
 
 if not args.after == 0:
     after = dateToInt(args.after)
@@ -94,5 +95,5 @@ if data:
         totalLength += len(data)
         data = getPushshiftData(query, after, before, sub)
     
-    print(totalLength)
+    print("Found %s results." % totalLength)
     updateSubs_file()
