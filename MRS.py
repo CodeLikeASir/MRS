@@ -1,4 +1,3 @@
-import pandas as pd
 import requests
 import json
 import csv
@@ -7,7 +6,14 @@ import time
 import datetime
 
 def getPushshiftData(query, after, before, sub):
-    url = 'https://api.pushshift.io/reddit/search/submission/?title='+str(query)+'&size=1000&after='+str(after)+'&before='+str(before)+'&subreddit='+str(sub)
+    url = 'https://api.pushshift.io/reddit/search/submission/?title='+str(query)+'&size=1000' +'&subreddit='+str(sub)
+    
+    if after != 0:
+        url += '&after=' + str(after)
+        
+    if before != 0:
+        url += '&before=' + str(before)
+        
     r = requests.get(url)
     if not '<html>' in r.text:
         data = json.loads(r.text)
