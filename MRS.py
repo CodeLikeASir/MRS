@@ -4,9 +4,10 @@ import csv
 import argparse, sys
 import time
 import datetime
+import tkinter
 
-def getPushshiftData(query, after, before, sub):
-    url = 'https://api.pushshift.io/reddit/search/submission/?title='+str(query)+'&size=1000' +'&subreddit='+str(sub)
+def getPushshiftData(query, sub, after, before):
+    url = 'https://api.pushshift.io/reddit/search/submission/?title=' + str(query) + '&size=1000'  + '&subreddit=' + str(sub)
     
     if after != 0:
         url += '&after=' + str(after)
@@ -19,10 +20,9 @@ def getPushshiftData(query, after, before, sub):
         data = json.loads(r.text)
         return data['data']
     else:
-        print('error.')
         return None
 
-def collectSubData(subm):
+def collectSubData(subm, subStats):
     subData = list() #list to store data points
     title = subm['title']
     url = subm['url']
@@ -40,11 +40,10 @@ def collectSubData(subm):
     subData.append((sub_id,title,url,author,score,created,numComms,permalink,flair))
     subStats[sub_id] = subData
 
-def updateSubs_file():
+def updateSubs_file(filename, subStats):
     upload_count = 0
-    print("Enter filename for the submission file:")
-    filename = input()
     file = filename + ".csv"
+    print("Saving to " + str(file))
     with open(file, 'w', newline='', encoding='utf-8') as file: 
         a = csv.writer(file, delimiter=',')
         headers = ["Post ID","Title","Url","Author","Score","Publish Date","Total No. of Comments","Permalink","Flair"]
@@ -58,48 +57,36 @@ def updateSubs_file():
 def dateToInt(date):
     return int(time.mktime(datetime.datetime.strptime(date, "%Y-%m-%d").timetuple()))
 
-parser=argparse.ArgumentParser()
+def startSearch(query, after, before, sub, filename, statusText, tk):
+    statusText.delete('1.0', tkinter.END)
+    statusText.insert(tkinter.END, "Fetching data.\n")
+    tk.update()
 
-parser.add_argument('--keyword', help='keyword to search for', default='_')
-parser.add_argument('--subr', help='name of subreddit to search in', default='all')
-parser.add_argument('--after', help='first date to find results for, format YYYY-MM-DD, example: 2020-01-01', default=0)
-parser.add_argument('--before', help='last date to find results for', default=0)
+    data = getPushshiftData(query, after, before, sub)
+    totalLength = 0
+    subCount = 0
+    subStats = {}
 
-args=parser.parse_args()
-    
-#Subreddit to query
-sub = args.subr
+    statusText.insert(tkinter.END, "Converting data.\n")
+    tk.update()
 
-#before and after placeholder
-after = ""
-before = ""
+    if data:
+        while len(data) > 0:
+            for submission in data:
+                collectSubData(submission, subStats)
+                subCount+=1
+                
+            statusText.insert(tkinter.END, "Added results until " + str(datetime.datetime.fromtimestamp(data[-1]['created_utc'])) + "\n")
+            tk.update()
 
-if not args.after == 0:
-    after = dateToInt(args.after)
-else:
-    after = args.after
-    
-if not args.before == 0:
-    before = dateToInt(args.before)
-else:
-    before = args.before
-    
-query = args.keyword
-subCount = 0
-subStats = {}
+            after = data[-1]['created_utc']
+            totalLength += len(data)
+            data = getPushshiftData(query, after, before, sub)
+        
+        statusText.insert(tkinter.END, "Found %s results.\n" % totalLength)
+        statusText.insert(tkinter.END, "Completed.", "success")
+        tk.update()
 
-data = getPushshiftData(query, after, before, sub)
-totalLength = 0
-
-if data:
-    while len(data) > 0:
-        for submission in data:
-            collectSubData(submission)
-            subCount+=1
-        print("Added results until " + str(datetime.datetime.fromtimestamp(data[-1]['created_utc'])))
-        after = data[-1]['created_utc']
-        totalLength += len(data)
-        data = getPushshiftData(query, after, before, sub)
-    
-    print("Found %s results." % totalLength)
-    updateSubs_file()
+        updateSubs_file(filename, subStats)
+    else:
+        statusText.insert(tkinter.END, "No data found.", "fail")
