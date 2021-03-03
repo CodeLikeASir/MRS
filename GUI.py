@@ -1,6 +1,7 @@
 from tkinter import *
 from MRS import startSearch
 from datetime import date
+from tkcalendar import Calendar, DateEntry
 
 xPad = 5
 yPad = 3
@@ -33,15 +34,13 @@ class App:
     afterLabel = Label(text="After: ")
     afterLabel.grid(row = 3, column = 0, padx= xPad, pady = yPad)
 
-    self.afterEntry = Entry()
-    self.afterEntry.insert(END, "2021-01-03")
+    self.afterEntry = DateEntry()
     self.afterEntry.grid(row = 3, column = 1, padx= xPad, pady = yPad, sticky='ew')
 
     beforeLabel = Label(text="Before: ")
     beforeLabel.grid(row = 4, column = 0, padx= xPad, pady = yPad)
 
-    self.beforeEntry = Entry()
-    self.beforeEntry.insert(END, date.today().strftime("%Y-%m-%d"))
+    self.beforeEntry = DateEntry()
     self.beforeEntry.grid(row = 4, column = 1, padx= xPad, pady = yPad, sticky='ew')
 
     self.searchBtn = Button(
@@ -58,10 +57,10 @@ class App:
     query = self.queryEntry.get()
     subr = self.subEntry.get()
     filename = self.filenameEntry.get()
-    after = self.afterEntry.get()
-    before = self.beforeEntry.get()
+    after = self.afterEntry.get_date()
+    before = self.beforeEntry.get_date()
 
-    startSearch(query, subr, after, before, filename, self.statusText, root)
+    startSearch(query, after, before, subr, filename, self.statusText, root)
 
 root = Tk()
 root.title("MyRedditScrapper")

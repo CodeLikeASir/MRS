@@ -7,13 +7,8 @@ import datetime
 import tkinter
 
 def getPushshiftData(query, sub, after, before):
-    url = 'https://api.pushshift.io/reddit/search/submission/?title=' + str(query) + '&size=1000'  + '&subreddit=' + str(sub)
-    
-    if after != 0:
-        url += '&after=' + str(after)
-        
-    if before != 0:
-        url += '&before=' + str(before)
+    url = 'https://api.pushshift.io/reddit/search/submission/?title=' + str(query) + '&size=1000'  + '&subreddit=' + str(sub) + '&after=' + str(after) + '&before=' + str(before)
+    print("url= " + url)
         
     r = requests.get(url)
     if not '<html>' in r.text:
@@ -62,7 +57,7 @@ def startSearch(query, after, before, sub, filename, statusText, tk):
     statusText.insert(tkinter.END, "Fetching data.\n")
     tk.update()
 
-    data = getPushshiftData(query, after, before, sub)
+    data = getPushshiftData(query, sub, after, before)
     totalLength = 0
     subCount = 0
     subStats = {}
@@ -80,9 +75,11 @@ def startSearch(query, after, before, sub, filename, statusText, tk):
             tk.update()
 
             after = data[-1]['created_utc']
+            print("new after: " + str(after))
             totalLength += len(data)
-            data = getPushshiftData(query, after, before, sub)
+            data = getPushshiftData(query, sub, after, before)
         
+        print("Stopped because not data left: " + str(len(data)))
         statusText.insert(tkinter.END, "Found %s results.\n" % totalLength)
         statusText.insert(tkinter.END, "Completed.", "success")
         tk.update()
