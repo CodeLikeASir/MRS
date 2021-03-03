@@ -8,7 +8,6 @@ import tkinter
 
 def getPushshiftData(query, sub, after, before):
     url = 'https://api.pushshift.io/reddit/search/submission/?title=' + str(query) + '&size=1000'  + '&subreddit=' + str(sub) + '&after=' + str(after) + '&before=' + str(before)
-    print("url= " + url)
         
     r = requests.get(url)
     if not '<html>' in r.text:
@@ -75,7 +74,6 @@ def startSearch(query, after, before, sub, filename, statusText, tk):
             tk.update()
 
             after = data[-1]['created_utc']
-            print("new after: " + str(after))
             totalLength += len(data)
             data = getPushshiftData(query, sub, after, before)
         

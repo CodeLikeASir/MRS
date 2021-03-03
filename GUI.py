@@ -48,7 +48,7 @@ class App:
                          command=self.search)
     self.searchBtn.grid(row = 100, column = 0, columnspan=2, sticky='nesw', padx= xPad, pady = yPad)
 
-    self.statusText = Text(width=41, height=20)
+    self.statusText = Text(width=41, height=17)
     self.statusText.grid(row = 101, column = 0, columnspan=2, sticky='nesw', padx= xPad, pady = yPad)
     self.statusText.tag_configure("success", foreground="green")
     self.statusText.tag_configure("fail", foreground="red")
