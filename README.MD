@@ -1,9 +1,12 @@
-Before you can start using the Reddit scrapper, you have to enter your Reddit API credentials in the config.txt.
-For more information follow this guide: https://github.com/JosephLai241/URS/blob/master/docs/How%20to%20Get%20PRAW%20Credentials.md
+The scrapper has to ways to use it:
+1. Via the terminal:
+  To use the Reddit scrapper, open a terminal, go to the files location and insert
+  python MRS.py --help for more information.
 
-To use the Reddit scrapper, open a terminal, go to the files location and insert
-python MRS.py --help for more information.
+  Filter modes:
+  0: Filter by flair
+  1: Filter by keyword in title
 
-Filter modes:
-0: Filter by flair
-1: Filter by keyword in title
+2. Via the GUI version:
+  Just execute the GUI.py via
+  python GUI.py
